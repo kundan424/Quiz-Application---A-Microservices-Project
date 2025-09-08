@@ -22,7 +22,60 @@ The application is composed of four primary microservices that work together to 
 
 ```
 
+### Detailed Architecture and Request Flow
 
+This Quiz Application is built on a microservice architecture, which makes it scalable, resilient, and easy to maintain. Each service is designed to be an independent component with its own specific responsibility.
+
+Here is a visual representation of how the services interact:
+
+```mermaid
+graph TD
+    subgraph "User's Device"
+        Client["👨‍💻 Client<br>(Browser/Postman)"]
+    end
+
+    subgraph "Network Layer"
+        API_Gateway["🚪 API Gateway<br>(localhost:8080)"]
+    end
+
+    subgraph "Infrastructure Services"
+        Service_Registry["🗺️ Service Registry<br>(Eureka Server)"]
+    end
+
+    subgraph "Application Services"
+        Quiz_Service["📝 Quiz Service"]
+        Question_Service["❓ Question Service"]
+    end
+    
+    subgraph "Data Layer"
+        DB1["🗃️ MongoDB<br>(Quiz Database)"]
+        DB2["🗃️ MongoDB<br>(Question Database)"]
+    end
+
+    %% Request Flow
+    Client -- "1. Request (e.g., POST /quiz/create)" --> API_Gateway
+    
+    %% Service Discovery
+    API_Gateway -- "2. Where is QUIZ-SERVICE?" --> Service_Registry
+    Service_Registry -- "3. It's at IP:Port" --> API_Gateway
+    
+    %% Request Routing
+    API_Gateway -- "4. Forwards Request" --> Quiz_Service
+    
+    %% Inter-Service Communication
+    Quiz_Service -- "5. Needs Questions (Feign Client Call)" --> Service_Registry
+    Service_Registry -- "6. QUESTION-SERVICE is at IP:Port" --> Quiz_Service
+    Quiz_Service -- "7. GET /question/generate" --> Question_Service
+    
+    %% Database Interaction
+    Question_Service -- "8. Fetches Questions" --> DB2
+    Quiz_Service -- "9. Saves New Quiz" --> DB1
+
+    %% Response Flow
+    Question_Service -- "Returns Questions" --> Quiz_Service
+    Quiz_Service -- "10. Returns Success Response" --> API_Gateway
+    API_Gateway -- "11. Final Response to Client" --> Client
+```
 
   * **Service Registry (`registry-service`)**: Utilizes Netflix Eureka to allow services to register themselves and discover others. This is the central hub for our service-to-service communication network.
   * **API Gateway (`api-gateway`)**: The single entry point for all client requests. It intelligently routes traffic to the appropriate microservice and is configured to work with the service registry for dynamic routing.
