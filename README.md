@@ -40,10 +40,10 @@ The application is composed of four primary microservices that work together to 
 
 Here are the links to the public GitHub repositories for each individual microservice:
 
-  * **Service Registry**: `https://github.com/kundan424/registry-service`
-  * **API Gateway**: `https://github.com/kundan424/api-gateway`
-  * **Question Service**: `https://github.com/kundan424/question-service`
-  * **Quiz Service**: `https://github.com/kundan424/quiz-service`
+  * **Service Registry**: https://github.com/kundan424/registry-service
+  * **API Gateway**: https://github.com/kundan424/api-gateway
+  * **Question Service**: https://github.com/kundan424/question-service
+  * **Quiz Service**: https://github.com/kundan424/quiz-service
 
 ## Getting Started
 
